@@ -597,11 +597,15 @@
                                      :class="{'active': activeTab === 'scheduler'}"
                                      @click="switchTab('scheduler')"
                                      title="Task Scheduler">Task Scheduler</div>
+                                <div class="settings-tab"
+                                     :class="{'active': activeTab === 'theme'}"
+                                     @click="switchTab('theme')"
+                                     title="Theme Customization">Theme</div>
                             </div>
                         </div>
 
                         <!-- Display settings sections for agent, external, developer tabs -->
-                        <div id="settings-sections" x-show="activeTab !== 'scheduler'">
+                        <div id="settings-sections" x-show="activeTab !== 'scheduler' && activeTab !== 'theme'">
                             <nav>
                                 <ul>
                                     <template x-for="(section, index) in filteredSections" :key="section.title">
@@ -1446,6 +1450,111 @@
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+
+                        <!-- Theme Customization Tab Content -->
+                        <div id="theme-tab-content" x-show="activeTab === 'theme'" x-cloak>
+                            <nav>
+                                <ul>
+                                    <li>
+                                        <a href="#section-theme-colors">
+                                            <img src="/public/dev.svg" alt="Theme Colors"> <!-- Placeholder icon, ideally a theme-related one -->
+                                            <span>Theme Colors</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#section-theme-bubbles">
+                                            <img src="/public/chat_model.svg" alt="Message Bubbles"> <!-- Placeholder icon -->
+                                            <span>Message Bubbles</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </nav>
+
+                            <div id="section-theme-colors" class="section">
+                                <div class="section-title">Theme Colors</div>
+                                <div class="section-description">Customize the main colors of the application. Enter HEX color codes.</div>
+                                <!-- Color Fields will be added here, example: -->
+                                <div class="field">
+                                    <div class="field-label">
+                                        <div class="field-title">Background Color (Dark)</div>
+                                    </div>
+                                    <div class="field-control">
+                                        <input type="text" placeholder="#121212" x-model="customTheme.colors.backgroundDark">
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <div class="field-label">
+                                        <div class="field-title">Text Color (Dark)</div>
+                                    </div>
+                                    <div class="field-control">
+                                        <input type="text" placeholder="#E0E0E0" x-model="customTheme.colors.textDark">
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <div class="field-label">
+                                        <div class="field-title">Primary Color (Dark)</div>
+                                    </div>
+                                    <div class="field-control">
+                                        <input type="text" placeholder="#BB86FC" x-model="customTheme.colors.primaryDark">
+                                    </div>
+                                </div>
+                                 <div class="field">
+                                    <div class="field-label">
+                                        <div class="field-title">Background Color (Light)</div>
+                                    </div>
+                                    <div class="field-control">
+                                        <input type="text" placeholder="#FFFFFF" x-model="customTheme.colors.backgroundLight">
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <div class="field-label">
+                                        <div class="field-title">Text Color (Light)</div>
+                                    </div>
+                                    <div class="field-control">
+                                        <input type="text" placeholder="#212121" x-model="customTheme.colors.textLight">
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <div class="field-label">
+                                        <div class="field-title">Primary Color (Light)</div>
+                                    </div>
+                                    <div class="field-control">
+                                        <input type="text" placeholder="#6200EE" x-model="customTheme.colors.primaryLight">
+                                    </div>
+                                </div>
+                                <!-- Add more color fields as needed:
+                                    - Secondary Color (Dark/Light)
+                                    - Accent Color (Dark/Light)
+                                    - Panel Background (Dark/Light)
+                                    - Border Color (Dark/Light)
+                                    - Input Background (Dark/Light)
+                                    - Message Background (Dark/Light)
+                                -->
+                            </div>
+
+                            <div id="section-theme-bubbles" class="section">
+                                <div class="section-title">Message Bubble Appearance</div>
+                                <div class="section-description">Customize the shape of message bubbles.</div>
+                                <div class="field">
+                                    <div class="field-label">
+                                        <div class="field-title">Bubble Shape</div>
+                                    </div>
+                                    <div class="field-control">
+                                        <select x-model="customTheme.bubbleShape">
+                                            <option value="default">Default</option>
+                                            <option value="rounded">Rounded</option>
+                                            <option value="slightly-rounded">Slightly Rounded</option>
+                                            <option value="square">Square</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="section theme-actions">
+                                <button class="btn btn-ok" @click="saveCustomTheme()">Save Theme</button>
+                                <button class="btn btn-cancel" @click="resetCustomTheme()">Reset to Default</button>
                             </div>
                         </div>
                     </div>

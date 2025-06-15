@@ -954,3 +954,44 @@ nav ul li a img {
 }
 
 /* Token field (for ad-hoc tasks) */
+
+/* Theme Customization Tab Styles */
+#theme-tab-content .section {
+    margin-bottom: 1.5rem; /* Standard section spacing */
+}
+
+#theme-tab-content .section-title {
+    margin-bottom: 1rem; /* Space below title */
+}
+
+#theme-tab-content .section-description {
+    margin-bottom: 1rem; /* Space below description */
+}
+
+/* Styling for color input fields */
+#section-theme-colors .field-control input[type="text"] {
+    min-width: 150px;
+    max-width: 200px; /* Prevent it from becoming too wide */
+    font-family: 'Roboto Mono', monospace; /* Monospaced font for hex codes */
+    padding: 0.5rem 0.75rem; /* Consistent padding */
+}
+
+/* Styling for bubble shape select element */
+#section-theme-bubbles .field-control select {
+    padding: 0.5rem;
+    border-radius: var(--border-radius); /* Use theme variable */
+    border: 1px solid var(--color-border);
+    background-color: var(--color-input);
+    color: var(--color-text);
+    min-width: 200px; /* Ensure decent width */
+}
+
+/* Styling for the action buttons container in the theme tab */
+.theme-actions {
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--color-border);
+    display: flex;
+    justify-content: flex-end; /* Align buttons to the right */
+    gap: 0.75rem; /* Space between buttons */
+}

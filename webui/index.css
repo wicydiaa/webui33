@@ -7,30 +7,30 @@
 
 :root {
   /* Dark mode */
-  --color-background-dark: #121212;
-  --color-text-dark: #E0E0E0;
-  --color-primary-dark: #BB86FC;
-  --color-secondary-dark: #373737;
-  --color-accent-dark: #03DAC6;
-  --color-message-bg-dark: #1E1E1E;
-  --color-message-text-dark: #E0E0E0; /* Kept for now */
-  --color-panel-dark: #1A1A1A;
-  --color-border-dark: #2C2C2C;
-  --color-input-dark: #232323;
-  --color-input-focus-dark: #2A2A2A;
+  --color-background-dark: #131313;
+  --color-text-dark: #d4d4d4;
+  --color-primary-dark: #737a81;
+  --color-secondary-dark: #656565;
+  --color-accent-dark: #cf6679;
+  --color-message-bg-dark: #2d2d2d;
+  --color-message-text-dark: #e0e0e0;
+  --color-panel-dark: #171717;
+  --color-border-dark: #444444a8;
+  --color-input-dark: #131313;
+  --color-input-focus-dark: #101010;
 
   /* Light mode */
-  --color-background-light: #FFFFFF;
-  --color-text-light: #212121;
-  --color-primary-light: #6200EE;
-  --color-secondary-light: #F5F5F5;
-  --color-accent-light: #03DAC6;
-  --color-message-bg-light: #F0F0F0;
-  --color-message-text-light: #212121; /* Updated for better contrast */
-  --color-panel-light: #FFFFFF;
-  --color-border-light: #E0E0E0;
-  --color-input-light: #F5F5F5;
-  --color-input-focus-light: #EEEEEE;
+  --color-background-light: #dbdbdb;
+  --color-text-light: #333333;
+  --color-primary-light: #384653;
+  --color-secondary-light: #e8eaf6;
+  --color-accent-light: #b00020;
+  --color-message-bg-light: #ffffff;
+  --color-message-text-light: #333333;
+  --color-panel-light: #f0f0f0;
+  --color-border-light: #e0e0e0c7;
+  --color-input-light: #e4e4e4;
+  --color-input-focus-light: #dadada;
 
   /* Default to dark mode */
   --color-background: var(--color-background-dark);
@@ -57,7 +57,7 @@
   --font-size-large: 1.2rem;
 
   /* Other variables */
-  --border-radius: 0.75rem; /* Modernized border radius */
+  --border-radius: 1.125rem;
   --transition-speed: 0.3s;
   --svg-filter: brightness(0) saturate(100%) var(--color-primary-filter);
   --color-primary-filter: invert(73%) sepia(17%) saturate(360%) hue-rotate(177deg) brightness(87%) contrast(85%);
@@ -127,7 +127,7 @@ body,
   width: 250px;
   min-width: 250px;
   color: var(--color-text);
-  box-shadow: 1px 0 8px color-mix(in srgb, var(--color-border) 20%, transparent); /* Softer shadow */
+  box-shadow: 1px 0 5px rgba(0, 0, 0, 0.3);
   user-select: none;
 }
 
@@ -834,7 +834,7 @@ pre {
 
 #chat-input {
   background-color: var(--color-input);
-  /* border: 1px solid var(--color-border); */ /* Replaced by specific border below after removing transparent one */
+  border: 1px solid var(--color-border);
   border-radius: 8px;
   color: var(--color-text);
   flex-grow: 1;
@@ -852,15 +852,14 @@ pre {
   resize: none;
   align-content: start;
   background-clip: border-box;
-  /* border: 6px solid transparent; */ /* Removed this line */
+  border: 6px solid transparent;
   transition: all 0.3s ease;
   -webkit-transition: all 0.3s ease;
-  border: 1px solid var(--color-border); /* Explicitly set border here */
 }
 
-/* #chat-input { // This duplicate rule is not needed if combined above
+#chat-input {
   outline: 1px solid var(--color-border);
-} */
+}
 
 #expand-button {
   position: absolute;
@@ -911,11 +910,10 @@ pre {
 }
 
 #chat-input:focus {
-  outline: none; /* Remove default outline for custom focus */
-  border: 1px solid var(--color-primary);
-  background-color: var(--color-input-focus);
+  outline: 0.05rem solid rgba(155, 155, 155, 0.5);
   font-size: 0.955rem;
   padding-top: 0.45rem;
+  background-color: var(--color-input-focus);
 }
 
 #chat-input::placeholder {
@@ -952,8 +950,8 @@ pre {
 }
 
 .config-button {
-  background-color: var(--color-panel); /* Use panel color for base */
-  border: 1px solid var(--color-border); /* Subtle border */
+  background-color: var(--color-background);
+  border: 0.1rem solid var(--color-border);
   border-radius: var(--spacing-xs);
   cursor: pointer;
   display: inline;
@@ -964,14 +962,14 @@ pre {
   width: calc(50% - var(--spacing-xs));
   float:left;
   margin: 0 var(--spacing-xs) var(--spacing-xs) 0;
-  padding: 0.6rem 0.9rem; /* Adjusted padding */
+  padding: var(--spacing-sm) 0.75rem;
   max-height: 2.3rem;
   -webkit-transition: all var(--transition-speed), transform 0.1s ease-in-out;
   transition: all var(--transition-speed), transform 0.1s ease-in-out;
 }
 
 .config-button:hover {
-  background-color: var(--color-secondary); /* Use theme secondary for hover */
+  background-color: var(--color-secondary);
   opacity: 1;
 }
 
@@ -1230,24 +1228,25 @@ pre {
 
 .text-button {
   background-color: transparent;
-  border: 1px solid var(--color-border); /* Subtle border */
-  border-radius: var(--spacing-xs);
+  border: none;
+  border-radius: 5px;
   color: var(--color-text);
   font-family: "Rubik", Arial, Helvetica, sans-serif;
-  font-size: 0.6rem; /* Keeping original size as it's small already */
-  padding: 0.5rem 0.8rem; /* Adjusted padding */
+  font-size: 0.6rem;
+  padding: 6px var(--spacing-sm);
   cursor: pointer;
   opacity: 0.8;
   -webkit-transition: all 0.3s;
   transition: all 0.3s;
   display: flex;
   align-items: center;
-  gap: var(--spacing-xs);
+  gap: var(--spacing-xs); /* space between icon and text */
 }
 
 .text-button:hover {
   opacity: 1;
   background-color: var(--color-secondary);
+  border-radius: 4px;
 }
 
 .text-button:active {
@@ -1292,31 +1291,22 @@ pre {
 }
 
 #send-button {
-  background-color: var(--color-primary);
+  background-color: #4248f1;
 }
 
 #send-button:hover {
   -webkit-transform: scale(1.05);
   transform: scale(1.05);
   transform-origin: center;
-  background-color: var(--color-accent);
-}
-
-.light-mode #send-button:hover {
-  background-color: var(--color-accent-light);
+  background-color: #353bc5;
 }
 
 #send-button:active {
   -webkit-transform: scale(1);
   transform: scale(1);
   transform-origin: center;
-  background-color: color-mix(in srgb, var(--color-accent) 80%, black);
+  background-color: #2b309c;
 }
-
-.light-mode #send-button:active {
-  background-color: color-mix(in srgb, var(--color-accent-light) 80%, black);
-}
-
 
 .chat-button svg {
   width: 1.5rem;
@@ -2305,24 +2295,26 @@ a:active {
 }
 
 .tab:not(.active) {
-  opacity: 0.7; /* Slightly more subtle for non-active tabs */
+  opacity: 0.8;
   border-bottom: 3px solid var(--color-border);
-  background-color: color-mix(in srgb, var(--color-panel) 70%, transparent); /* More transparent background */
+  background-color: rgba(255, 255, 255, 0.03);
 }
 
 .tab.active {
-  border-color: var(--color-primary); /* Use primary color for active tab border */
+  border-color: var(--color-border);
+  /* box-shadow:
+    0 -4px 8px -2px var(--color-border),
+    4px 0 8px -2px var(--color-border),
+    -4px 0 8px -2px var(--color-border); */
   font-weight: bold;
   background-color: var(--color-panel);
-  opacity: 1; /* Ensure active tab is fully opaque */
 }
 
 .light-mode .tab.active {
-  border-color: var(--color-primary-light); /* Ensure light mode also uses primary for active border */
   box-shadow:
-    0 -4px 8px -2px var(--color-border-light), /* Adjusted for light mode variables */
-    4px 0 8px -2px var(--color-border-light),
-    -4px 0 8px -2px var(--color-border-light); /* Adjusted for light mode variables */
+    0 -4px 8px -2px var(--color-border),
+    4px 0 8px -2px var(--color-border),
+    -4px 0 8px -2px var(--color-border);
 }
 
 .light-mode .tab:not(.active) {
@@ -2437,6 +2429,20 @@ a:active {
 }
 
 /* Settings Modal Styles */
+/* Message Bubble Shape Classes */
+.message-bubble-default .message {
+    border-radius: 0.75rem; /* Default as per recent theme update */
+}
+.message-bubble-rounded .message {
+    border-radius: 1.5em; /* More pronounced rounding */
+}
+.message-bubble-slightly-rounded .message {
+    border-radius: 1em; /* A bit more than default */
+}
+.message-bubble-square .message {
+    border-radius: 0.25em; /* Squarish */
+}
+
 .settings-modal {
     position: fixed;
     top: 0;
