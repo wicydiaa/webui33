@@ -17,8 +17,8 @@
 /* Modal Container */
 .modal-container {
   background-color: var(--color-panel);
-  border-radius: var(--border-radius); /* Use theme border-radius */
-  width: 1100px;
+  border-radius: 12px;
+  width: 1100px; /* Reduced from 1200px to 1100px */
   max-height: 90vh;
   display: flex;
   flex-direction: column;
@@ -79,12 +79,11 @@
   opacity: 0.7;
   cursor: pointer;
   padding: 0;
-  transition: opacity 0.2s, color 0.2s; /* Added color transition */
+  transition: opacity 0.2s;
 }
 
 .modal-close:hover {
   opacity: 1;
-  color: var(--color-accent); /* Use accent color on hover */
 }
 
 /* Modal Description */
@@ -258,49 +257,36 @@
 /* Button Styles */
 .btn {
   font-weight: 500;
-  padding: 0.6rem 1.2rem; /* Adjusted padding */
-  border-radius: var(--border-radius); /* Use theme border-radius */
+  padding: 0.5rem 1.5rem;
+  border-radius: 0.25rem;
   cursor: pointer;
-  border: 1px solid transparent; /* Default to transparent border */
+  border: none;
   font-size: 0.875rem;
   font-family: "Rubik", Arial, Helvetica, sans-serif;
-  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 }
 
 .btn.slim {
   padding: 0.2em 0.4em;
 }
 
-.btn.primary { /* General primary button style */
-  background-color: var(--color-primary);
-  color: var(--color-background-dark); /* Text color that contrasts with primary, ensure good contrast on dark primary */
-  border-color: var(--color-primary);
+.btn.primary {
+  background: #2196f3;
+  color: white;
+  width: fit-content;
 }
-
-.btn.primary:hover {
-  background-color: color-mix(in srgb, var(--color-primary) 85%, black);
-  border-color: color-mix(in srgb, var(--color-primary) 85%, black);
-}
-
-.light-mode .btn.primary {
-  color: var(--color-background-light); /* Ensure contrast in light mode */
-}
-
 
 .btn:disabled {
-  background-color: var(--color-secondary);
-  border-color: var(--color-secondary);
-  color: color-mix(in srgb, var(--color-text) 50%, transparent);
+  background: #ccc;
   cursor: not-allowed;
 }
 
-.btn-ok { /* Specific OK button, often used as primary action */
-  background-color: var(--color-primary);
-  color: var(--color-background-dark); /* Text color for primary buttons */
-  border: 1px solid var(--color-primary);
+.btn-ok {
+  background: #4248f1;
+  color: white;
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
+  transition: background 0.3s ease-in-out;
 }
 
 .btn-ok > svg {
@@ -308,65 +294,48 @@
 }
 
 .btn-ok:hover {
-  background-color: color-mix(in srgb, var(--color-primary) 80%, black); /* Darken primary */
-  border-color: color-mix(in srgb, var(--color-primary) 80%, black);
+  background: #353bc5;
 }
 
 .btn-ok:active {
-  background-color: color-mix(in srgb, var(--color-primary) 70%, black); /* Further darken */
-  border-color: color-mix(in srgb, var(--color-primary) 70%, black);
+  background: #2b309c;
 }
 
-.light-mode .btn-ok {
-  color: var(--color-background-light); /* Ensure contrast for text on primary bg in light mode */
-}
-
-.btn-cancel { /* Specific Cancel button, often secondary action */
-  background-color: transparent;
+.btn-cancel {
+  background: transparent;
   color: var(--color-accent);
-  border: 1px solid var(--color-accent);
+  border: 0.15rem solid var(--color-accent);
+  transition: background 0.3s ease-in-out, color 0.3s ease-in-out;
 }
 
 .btn-cancel:hover {
-  background-color: var(--color-accent);
-  color: var(--color-background-dark); /* Text color that contrasts with accent */
+  background: var(--color-accent);
+  color: var(--color-text);
 }
 
 .btn-cancel:active {
-  background-color: color-mix(in srgb, var(--color-accent) 80%, black); /* Darken accent */
-  border-color: color-mix(in srgb, var(--color-accent) 80%, black);
-}
-
-.light-mode .btn-cancel {
-  color: var(--color-accent-light);
-  border-color: var(--color-accent-light);
+  background: #a94658;
+  color: var(--color-text);
 }
 
 .light-mode .btn-cancel:hover {
-   background-color: var(--color-accent-light);
-   color: var(--color-text-light); /* Ensure text is readable on accent bg in light mode */
+  background: var(--color-accent);
+  color: var(--color-background);
 }
 
 .light-mode .btn-cancel:active {
-  background-color: color-mix(in srgb, var(--color-accent-light) 80%, black);
-  border-color: color-mix(in srgb, var(--color-accent-light) 80%, black);
+  background: #a94658;
+  color: var(--color-background);
 }
 
-
-.btn-field { /* For buttons used as form fields or similar */
-  background-color: var(--color-secondary);
-  color: var(--color-text);
-  border: 1px solid var(--color-border);
-}
-
-.btn-field:hover {
-  background-color: color-mix(in srgb, var(--color-secondary) 80%, var(--color-background));
-  border-color: var(--color-primary);
+.btn-field {
+  background: #2196f3;
+  color: white;
+  width: fit-content;
 }
 
 .btn-field:disabled {
-  background-color: var(--color-secondary);
-  opacity: 0.5;
+  background: #ccc;
   cursor: not-allowed;
 }
 

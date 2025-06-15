@@ -7,30 +7,30 @@
 
 :root {
   /* Dark mode */
-  --color-background-dark: #131313;
-  --color-text-dark: #d4d4d4;
-  --color-primary-dark: #737a81;
-  --color-secondary-dark: #656565;
-  --color-accent-dark: #cf6679;
-  --color-message-bg-dark: #2d2d2d;
-  --color-message-text-dark: #e0e0e0;
-  --color-panel-dark: #171717;
-  --color-border-dark: #444444a8;
-  --color-input-dark: #131313;
-  --color-input-focus-dark: #101010;
+  --color-background-dark: #121212;
+  --color-text-dark: #E0E0E0;
+  --color-primary-dark: #BB86FC;
+  --color-secondary-dark: #373737;
+  --color-accent-dark: #03DAC6;
+  --color-message-bg-dark: #1E1E1E;
+  --color-message-text-dark: #E0E0E0;
+  --color-panel-dark: #1A1A1A;
+  --color-border-dark: #2C2C2C;
+  --color-input-dark: #232323;
+  --color-input-focus-dark: #2A2A2A;
 
   /* Light mode */
-  --color-background-light: #dbdbdb;
-  --color-text-light: #333333;
-  --color-primary-light: #384653;
-  --color-secondary-light: #e8eaf6;
-  --color-accent-light: #b00020;
-  --color-message-bg-light: #ffffff;
-  --color-message-text-light: #333333;
-  --color-panel-light: #f0f0f0;
-  --color-border-light: #e0e0e0c7;
-  --color-input-light: #e4e4e4;
-  --color-input-focus-light: #dadada;
+  --color-background-light: #FFFFFF;
+  --color-text-light: #212121;
+  --color-primary-light: #6200EE;
+  --color-secondary-light: #F5F5F5;
+  --color-accent-light: #03DAC6;
+  --color-message-bg-light: #F0F0F0;
+  --color-message-text-light: #212121;
+  --color-panel-light: #FFFFFF;
+  --color-border-light: #E0E0E0;
+  --color-input-light: #F5F5F5;
+  --color-input-focus-light: #EEEEEE;
 
   /* Default to dark mode */
   --color-background: var(--color-background-dark);
@@ -57,7 +57,7 @@
   --font-size-large: 1.2rem;
 
   /* Other variables */
-  --border-radius: 1.125rem;
+  --border-radius: 0.75rem; /* Updated border-radius */
   --transition-speed: 0.3s;
   --svg-filter: brightness(0) saturate(100%) var(--color-primary-filter);
   --color-primary-filter: invert(73%) sepia(17%) saturate(360%) hue-rotate(177deg) brightness(87%) contrast(85%);
@@ -569,7 +569,7 @@ pre {
 }
 
 .message {
-  background-color: var(--color-message-bg); /* Ensure this uses the theme variable */
+  background-color: var(--color-message-bg);
   border-radius: var(--border-radius);
   padding: 0.9rem var(--spacing-md) 0.7rem var(--spacing-md);
 }
@@ -632,6 +632,7 @@ pre {
 }
 
 /* Update message types for dark mode */
+/* Remove old background/color from specific message classes if they exist, let data-attributes handle it */
 .message-default,
 .message-agent,
 .message-agent-response,
@@ -643,54 +644,114 @@ pre {
 .message-util,
 .message-warning,
 .message-error {
-  color: var(--color-text-dark); /* Ensure text color uses variable */
+  /* color: #e0e0e0; */ /* Let data-attribute or .message define text color */
 }
 
 .message-default {
-  background-color: color-mix(in srgb, var(--color-secondary-dark) 10%, var(--color-message-bg-dark));
+  /* background-color: #1a242f; */
 }
 
 .message-agent {
-  background-color: color-mix(in srgb, var(--color-primary-dark) 10%, var(--color-message-bg-dark));
+  /* background-color: #34506b; */
 }
 
 .message-agent-response {
-  min-width: 255px;
-  background-color: color-mix(in srgb, var(--color-accent-dark) 10%, var(--color-message-bg-dark));
+  min-width: 255px; /* Keep other styles if needed */
+  /* background-color: #1f3c1e; */
 }
 
 .message-agent-delegation {
-  background-color: color-mix(in srgb, var(--color-primary-dark) 15%, var(--color-message-bg-dark));
+  /* background-color: #12685e; */
 }
 
 .message-tool {
-  background-color: color-mix(in srgb, var(--color-secondary-dark) 30%, var(--color-message-bg-dark));
+  /* background-color: #2a4170; */
 }
 
 .message-code-exe {
-  background-color: color-mix(in srgb, var(--color-accent-dark) 15%, var(--color-message-bg-dark));
+  /* background-color: #4b3a69; */
 }
 
 .message-browser {
-  background-color: color-mix(in srgb, var(--color-accent-dark) 15%, var(--color-message-bg-dark));
+  /* background-color: #4b3a69; */
 }
 
 .message-info {
-  background-color: color-mix(in srgb, var(--color-panel-dark) 80%, var(--color-message-bg-dark));
+  /* background-color: var(--color-panel); */
 }
 
 .message-util {
-  background-color: color-mix(in srgb, var(--color-secondary-dark) 5%, var(--color-message-bg-dark));
-  display: none;
+  /* background-color: #23211a; */
+  display: none; /* Keep this if it's intentional */
 }
 
 .message-warning {
-  background-color: color-mix(in srgb, orange 20%, var(--color-message-bg-dark));
+  /* background-color: #bc8036; */
 }
 
 .message-error {
-  background-color: color-mix(in srgb, red 20%, var(--color-message-bg-dark));
+  /* background-color: #af2222; */
 }
+
+
+/* Per-message type styling using data-attributes */
+.message[data-message-type="user"] {
+    background-color: var(--message-user-bg, var(--color-message-bg));
+    color: var(--message-user-text, var(--color-message-text));
+}
+.message[data-message-type="ai"] {
+    background-color: var(--message-ai-bg, var(--color-message-bg));
+    color: var(--message-ai-text, var(--color-message-text));
+}
+.message[data-message-type="agent"] {
+    background-color: var(--message-agent-bg, var(--color-message-bg));
+    color: var(--message-agent-text, var(--color-message-text));
+}
+.message[data-message-type="response"] {
+    background-color: var(--message-response-bg, var(--color-message-bg));
+    color: var(--message-response-text, var(--color-message-text));
+}
+.message[data-message-type="agent-response"] {
+    background-color: var(--message-agent-response-bg, var(--color-message-bg));
+    color: var(--message-agent-response-text, var(--color-message-text));
+}
+.message[data-message-type="agent-delegation"] {
+    background-color: var(--message-agent-delegation-bg, var(--color-message-bg));
+    color: var(--message-agent-delegation-text, var(--color-message-text));
+}
+.message[data-message-type="tool"] {
+    background-color: var(--message-tool-bg, var(--color-message-bg));
+    color: var(--message-tool-text, var(--color-message-text));
+}
+.message[data-message-type="code-exe"] {
+    background-color: var(--message-code-exe-bg, var(--color-message-bg));
+    color: var(--message-code-exe-text, var(--color-message-text));
+}
+.message[data-message-type="browser"] {
+    background-color: var(--message-browser-bg, var(--color-message-bg));
+    color: var(--message-browser-text, var(--color-message-text));
+}
+.message[data-message-type="info"] {
+    background-color: var(--message-info-bg, var(--color-message-bg));
+    color: var(--message-info-text, var(--color-message-text));
+}
+.message[data-message-type="util"] {
+    background-color: var(--message-util-bg, var(--color-message-bg));
+    color: var(--message-util-text, var(--color-message-text));
+}
+.message[data-message-type="warning"] {
+    background-color: var(--message-warning-bg, orange); /* Fallback to a generic warning color */
+    color: var(--message-warning-text, white);
+}
+.message[data-message-type="error"] {
+    background-color: var(--message-error-bg, red); /* Fallback to a generic error color */
+    color: var(--message-error-text, white);
+}
+.message[data-message-type="default"] {
+    background-color: var(--message-default-bg, var(--color-message-bg));
+    color: var(--message-default-text, var(--color-message-text));
+}
+
 
 /* Agent and AI Info */
 .agent-start {
@@ -1915,63 +1976,80 @@ a:active {
   border-bottom: 1px solid rgb(192 192 192 / 50%)
 }
 
+/* Light mode specific overrides for per-message type colors (if needed, or rely on CSS vars) */
+.light-mode .message[data-message-type="user"] {
+    background-color: var(--message-user-bg, var(--color-message-bg-light));
+    color: var(--message-user-text, var(--color-text-light));
+}
+/* Repeat for other types if specific light-mode fallbacks are different from dark-mode fallbacks */
+/* For example, warning/error might use different base colors in light mode for better visibility */
+.light-mode .message[data-message-type="warning"] {
+    background-color: var(--message-warning-bg, #FFD700); /* Lighter orange/yellow */
+    color: var(--message-warning-text, #212121); /* Darker text for light warning */
+}
+.light-mode .message[data-message-type="error"] {
+    background-color: var(--message-error-bg, #FF6B6B); /* Lighter red */
+    color: var(--message-error-text, #FFFFFF);
+}
+
+/* Remove old light-mode specific background/color if they conflict */
 .light-mode .message-default {
-  background-color: color-mix(in srgb, var(--color-secondary-light) 10%, var(--color-message-bg-light));
-  color: var(--color-text-light);
+  /* background-color: #f3f3f3; */
+  /* color: #1a242f; */
 }
 
 .light-mode .message-agent {
-  background-color: color-mix(in srgb, var(--color-primary-light) 10%, var(--color-message-bg-light));
-  color: var(--color-text-light);
+  /* background-color: #f3f3f3; */
+  /* color: #356ca3; */
 }
 
 .light-mode .message-agent-response {
-  background-color: color-mix(in srgb, var(--color-accent-light) 10%, var(--color-message-bg-light));
-  color: var(--color-text-light);
+  /* background-color: #f3f3f3; */
+  /* color: #188216; */
 }
 
 .light-mode .message-agent-delegation {
-  background-color: color-mix(in srgb, var(--color-primary-light) 15%, var(--color-message-bg-light));
-  color: var(--color-text-light);
+  /* background-color: #f3f3f3; */
+  /* color: #12685e; */
 }
 
 .light-mode .message-tool {
-  background-color: color-mix(in srgb, var(--color-secondary-light) 30%, var(--color-message-bg-light));
-  color: var(--color-text-light);
+  /* background-color: #f3f3f3; */
+  /* color: #1c3c88; */
 }
 
 .light-mode .message-code-exe {
-  background-color: color-mix(in srgb, var(--color-accent-light) 15%, var(--color-message-bg-light));
-  color: var(--color-text-light);
+  /* background-color: #f3f3f3; */
+  /* color: #6c43b0; */
 }
 
 .light-mode .message-browser {
-  background-color: color-mix(in srgb, var(--color-accent-light) 15%, var(--color-message-bg-light));
-  color: var(--color-text-light);
+  /* background-color: #ffffff; */
+  /* color: #6c43b0; */
 }
 
 .light-mode .message-info {
-  background-color: color-mix(in srgb, var(--color-panel-light) 80%, var(--color-message-bg-light));
-  color: var(--color-text-light);
+  /* background-color: #f3f3f3; */
+  /* color: #3f3f3f; */
 }
 
 .light-mode .message-util {
-  background-color: color-mix(in srgb, var(--color-secondary-light) 5%, var(--color-message-bg-light));
-  color: var(--color-text-light);
+  /* background-color: #f3f3f3; */
+  /* color: #5b5540; */
 }
 
 .light-mode .message-warning {
-  background-color: color-mix(in srgb, orange 20%, var(--color-message-bg-light));
-  color: var(--color-text-light);
+  /* background-color: #f3f3f3; */
+  /* color: #8f4800; */
 }
 
 .light-mode .message-error {
-  background-color: color-mix(in srgb, red 20%, var(--color-message-bg-light));
-  color: var(--color-text-light);
+  /* background-color: #f3f3f3; */
+  /* color: #8f1010; */
 }
 
 .light-mode .message-user {
-  background-color: var(--color-secondary-light); /* Using secondary for user messages in light mode */
+  /* background-color: #f3f3f3; */
   color: #4e4e4e;
 }
 
@@ -2442,6 +2520,38 @@ a:active {
 .message-bubble-square .message {
     border-radius: 0.25em; /* Squarish */
 }
+
+/* Markdown Content Styling */
+.message .msg-content span h1,
+.message .msg-content span h2,
+.message .msg-content span h3 { margin-top: 0.5em; margin-bottom: 0.25em; }
+.message .msg-content span p { margin-bottom: 0.5em; }
+.message .msg-content span ul, .message .msg-content span ol { margin-left: 1.5em; margin-bottom: 0.5em; }
+.message .msg-content span li { margin-bottom: 0.2em; }
+.message .msg-content span code {
+    background-color: color-mix(in srgb, var(--color-text) 10%, transparent); /* Subtle code background */
+    padding: 0.2em 0.4em;
+    border-radius: 3px;
+    font-family: 'Roboto Mono', monospace;
+}
+.message .msg-content span pre { /* Parent of code for blocks */
+    background-color: color-mix(in srgb, var(--color-text) 5%, transparent); /* Slightly different for block */
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius);
+    padding: 0.5em;
+    overflow-x: auto;
+}
+.message .msg-content span pre code { /* Code inside pre should not have its own background */
+    background-color: transparent;
+    padding: 0;
+}
+.message .msg-content span blockquote {
+    margin-left: 1em;
+    padding-left: 0.5em;
+    border-left: 3px solid var(--color-border);
+    color: color-mix(in srgb, var(--color-text) 70%, transparent); /* Muted blockquote text */
+}
+
 
 .settings-modal {
     position: fixed;

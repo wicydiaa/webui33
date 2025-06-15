@@ -123,6 +123,7 @@
     <script type="text/javascript" src="js/file_browser.js"></script>
     <script type="text/javascript" src="js/modal.js"></script>
     <script type="text/javascript" src="js/tunnel.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked@^4.0.0/marked.min.js"></script>
 </head>
 
 <body class="dark-mode">
@@ -280,14 +281,7 @@
                                     <span class="slider"></span>
                                 </label>
                             </li>
-                            <li x-data="{ darkMode: localStorage.getItem('darkMode') != 'false' }"
-                                x-init="$watch('darkMode', val => toggleDarkMode(val))">
-                                <span class="switch-label">Dark mode</span>
-                                <label class="switch">
-                                    <input type="checkbox" x-model="darkMode">
-                                    <span class="slider"></span>
-                                </label>
-                            </li>
+                            <!-- Dark Mode toggle removed from here -->
                             <li x-data="{ speech: localStorage.getItem('speech') == 'true' }"
                                 x-init="$watch('speech', val => toggleSpeech(val))">
                                 <span class="switch-label">Speech</span>
@@ -1458,9 +1452,27 @@
                             <nav>
                                 <ul>
                                     <li>
+                                        <a href="#section-site-customization">
+                                            <img src="/public/settings.svg" alt="Site Appearance"> <!-- Placeholder, update icon -->
+                                            <span>Site Appearance</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#section-general-theme-options">
+                                            <img src="/public/dev.svg" alt="General Options"> <!-- Placeholder, update icon -->
+                                            <span>General Options</span>
+                                        </a>
+                                    </li>
+                                    <li>
                                         <a href="#section-theme-colors">
                                             <img src="/public/dev.svg" alt="Theme Colors"> <!-- Placeholder icon, ideally a theme-related one -->
-                                            <span>Theme Colors</span>
+                                            <span>Global Colors</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#section-message-type-colors">
+                                            <img src="/public/chat_model.svg" alt="Message Colors"> <!-- Placeholder icon -->
+                                            <span>Message Colors</span>
                                         </a>
                                     </li>
                                     <li>
@@ -1472,75 +1484,240 @@
                                 </ul>
                             </nav>
 
+                            <div id="section-site-customization" class="section">
+                                <div class="section-title">Site Appearance</div>
+                                <div class="section-description">Customize the site title, logo, and related links.</div>
+                                <div class="field">
+                                    <div class="field-label"><div class="field-title">Site Title</div></div>
+                                    <div class="field-control"><input type="text" x-model="customTheme.siteTitle" placeholder="Agent Zero"></div>
+                                </div>
+                                <div class="field">
+                                    <div class="field-label"><div class="field-title">Logo Image URL</div></div>
+                                    <div class="field-control"><input type="text" x-model="customTheme.logoUrl" placeholder="public/splash.jpg"></div>
+                                </div>
+                                <div class="field">
+                                    <div class="field-label"><div class="field-title">Logo Link URL</div></div>
+                                    <div class="field-control"><input type="text" x-model="customTheme.logoLinkUrl" placeholder="https://github.com/frdel/agent-zero"></div>
+                                </div>
+                            </div>
+
+                            <div id="section-general-theme-options" class="section">
+                                <div class="section-title">General Theme Options</div>
+                                <div class="field">
+                                    <div class="field-label"><div class="field-title">Dark Mode</div><div class="field-description">Toggle dark or light theme.</div></div>
+                                    <div class="field-control">
+                                        <label class="switch">
+                                            <input type="checkbox" x-model="darkMode" @change="toggleDarkMode($event.target.checked)">
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <div class="field-label"><div class="field-title">Enable Markdown Rendering</div><div class="field-description">Render messages using Markdown.</div></div>
+                                    <div class="field-control">
+                                        <label class="switch">
+                                            <input type="checkbox" x-model="customTheme.markdownEnabled">
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div id="section-theme-colors" class="section">
-                                <div class="section-title">Theme Colors</div>
+                                <div class="section-title">Global Theme Colors</div>
                                 <div class="section-description">Customize the main colors of the application. Enter HEX color codes.</div>
-                                <!-- Color Fields will be added here, example: -->
                                 <div class="field">
-                                    <div class="field-label">
-                                        <div class="field-title">Background Color (Dark)</div>
-                                    </div>
-                                    <div class="field-control">
-                                        <input type="text" placeholder="#121212" x-model="customTheme.colors.backgroundDark">
-                                    </div>
+                                    <div class="field-label"><div class="field-title">Background Color (Dark)</div></div>
+                                    <div class="field-control"><input type="text" placeholder="#121212" x-model="customTheme.colors.backgroundDark"></div>
                                 </div>
                                 <div class="field">
-                                    <div class="field-label">
-                                        <div class="field-title">Text Color (Dark)</div>
-                                    </div>
-                                    <div class="field-control">
-                                        <input type="text" placeholder="#E0E0E0" x-model="customTheme.colors.textDark">
-                                    </div>
+                                    <div class="field-label"><div class="field-title">Text Color (Dark)</div></div>
+                                    <div class="field-control"><input type="text" placeholder="#E0E0E0" x-model="customTheme.colors.textDark"></div>
                                 </div>
                                 <div class="field">
-                                    <div class="field-label">
-                                        <div class="field-title">Primary Color (Dark)</div>
-                                    </div>
-                                    <div class="field-control">
-                                        <input type="text" placeholder="#BB86FC" x-model="customTheme.colors.primaryDark">
-                                    </div>
-                                </div>
-                                 <div class="field">
-                                    <div class="field-label">
-                                        <div class="field-title">Background Color (Light)</div>
-                                    </div>
-                                    <div class="field-control">
-                                        <input type="text" placeholder="#FFFFFF" x-model="customTheme.colors.backgroundLight">
-                                    </div>
+                                    <div class="field-label"><div class="field-title">Primary Color (Dark)</div></div>
+                                    <div class="field-control"><input type="text" placeholder="#BB86FC" x-model="customTheme.colors.primaryDark"></div>
                                 </div>
                                 <div class="field">
-                                    <div class="field-label">
-                                        <div class="field-title">Text Color (Light)</div>
-                                    </div>
-                                    <div class="field-control">
-                                        <input type="text" placeholder="#212121" x-model="customTheme.colors.textLight">
-                                    </div>
+                                    <div class="field-label"><div class="field-title">Secondary Color (Dark)</div></div>
+                                    <div class="field-control"><input type="text" placeholder="#373737" x-model="customTheme.colors.secondaryDark"></div>
                                 </div>
                                 <div class="field">
-                                    <div class="field-label">
-                                        <div class="field-title">Primary Color (Light)</div>
-                                    </div>
-                                    <div class="field-control">
-                                        <input type="text" placeholder="#6200EE" x-model="customTheme.colors.primaryLight">
-                                    </div>
+                                    <div class="field-label"><div class="field-title">Accent Color (Dark)</div></div>
+                                    <div class="field-control"><input type="text" placeholder="#03DAC6" x-model="customTheme.colors.accentDark"></div>
                                 </div>
-                                <!-- Add more color fields as needed:
-                                    - Secondary Color (Dark/Light)
-                                    - Accent Color (Dark/Light)
-                                    - Panel Background (Dark/Light)
-                                    - Border Color (Dark/Light)
-                                    - Input Background (Dark/Light)
-                                    - Message Background (Dark/Light)
-                                -->
+                                <div class="field">
+                                    <div class="field-label"><div class="field-title">Panel Background (Dark)</div></div>
+                                    <div class="field-control"><input type="text" placeholder="#1A1A1A" x-model="customTheme.colors.panelDark"></div>
+                                </div>
+                                <div class="field">
+                                    <div class="field-label"><div class="field-title">Border Color (Dark)</div></div>
+                                    <div class="field-control"><input type="text" placeholder="#2C2C2C" x-model="customTheme.colors.borderDark"></div>
+                                </div>
+                                <div class="field">
+                                    <div class="field-label"><div class="field-title">Input Background (Dark)</div></div>
+                                    <div class="field-control"><input type="text" placeholder="#232323" x-model="customTheme.colors.inputDark"></div>
+                                </div>
+                                <div class="field">
+                                    <div class="field-label"><div class="field-title">Message Background (Dark)</div></div>
+                                    <div class="field-control"><input type="text" placeholder="#1E1E1E" x-model="customTheme.colors.messageBgDark"></div>
+                                </div>
+                                <div class="field">
+                                    <div class="field-label"><div class="field-title">Background Color (Light)</div></div>
+                                    <div class="field-control"><input type="text" placeholder="#FFFFFF" x-model="customTheme.colors.backgroundLight"></div>
+                                </div>
+                                <div class="field">
+                                    <div class="field-label"><div class="field-title">Text Color (Light)</div></div>
+                                    <div class="field-control"><input type="text" placeholder="#212121" x-model="customTheme.colors.textLight"></div>
+                                </div>
+                                <div class="field">
+                                    <div class="field-label"><div class="field-title">Primary Color (Light)</div></div>
+                                    <div class="field-control"><input type="text" placeholder="#6200EE" x-model="customTheme.colors.primaryLight"></div>
+                                </div>
+                                <div class="field">
+                                    <div class="field-label"><div class="field-title">Secondary Color (Light)</div></div>
+                                    <div class="field-control"><input type="text" placeholder="#F5F5F5" x-model="customTheme.colors.secondaryLight"></div>
+                                </div>
+                                <div class="field">
+                                    <div class="field-label"><div class="field-title">Accent Color (Light)</div></div>
+                                    <div class="field-control"><input type="text" placeholder="#03DAC6" x-model="customTheme.colors.accentLight"></div>
+                                </div>
+                                <div class="field">
+                                    <div class="field-label"><div class="field-title">Panel Background (Light)</div></div>
+                                    <div class="field-control"><input type="text" placeholder="#FFFFFF" x-model="customTheme.colors.panelLight"></div>
+                                </div>
+                                <div class="field">
+                                    <div class="field-label"><div class="field-title">Border Color (Light)</div></div>
+                                    <div class="field-control"><input type="text" placeholder="#E0E0E0" x-model="customTheme.colors.borderLight"></div>
+                                </div>
+                                <div class="field">
+                                    <div class="field-label"><div class="field-title">Input Background (Light)</div></div>
+                                    <div class="field-control"><input type="text" placeholder="#F5F5F5" x-model="customTheme.colors.inputLight"></div>
+                                </div>
+                                <div class="field">
+                                    <div class="field-label"><div class="field-title">Message Background (Light)</div></div>
+                                    <div class="field-control"><input type="text" placeholder="#F0F0F0" x-model="customTheme.colors.messageBgLight"></div>
+                                </div>
+                            </div>
+
+                            <div id="section-message-type-colors" class="section">
+                                <div class="section-subtitle" style="margin-top: 20px; padding-top:10px; border-top:1px solid var(--color-border);">Per-Message Type Colors</div>
+                                <div class="section-description">Customize background and text color for each message type. These override global message colors. Applied to current mode (Dark/Light).</div>
+                                <!-- User -->
+                                <div class="field">
+                                    <div class="field-label"><div class="field-title">User Message Background</div></div>
+                                    <div class="field-control"><input type="text" x-model="customTheme.messageColors.user.background" placeholder="e.g., #4A4A4A"></div>
+                                </div>
+                                <div class="field">
+                                    <div class="field-label"><div class="field-title">User Message Text</div></div>
+                                    <div class="field-control"><input type="text" x-model="customTheme.messageColors.user.text" placeholder="e.g., #E0E0E0"></div>
+                                </div>
+                                <!-- AI/Agent (using 'agent' as key for now) -->
+                                <div class="field">
+                                    <div class="field-label"><div class="field-title">AI/Agent Message Background</div></div>
+                                    <div class="field-control"><input type="text" x-model="customTheme.messageColors.agent.background" placeholder="e.g., #34506B"></div>
+                                </div>
+                                <div class="field">
+                                    <div class="field-label"><div class="field-title">AI/Agent Message Text</div></div>
+                                    <div class="field-control"><input type="text" x-model="customTheme.messageColors.agent.text" placeholder="e.g., #E0E0E0"></div>
+                                </div>
+                                 <!-- Default -->
+                                <div class="field">
+                                    <div class="field-label"><div class="field-title">Default Message Background</div></div>
+                                    <div class="field-control"><input type="text" x-model="customTheme.messageColors.default.background" placeholder="e.g., #1A242F"></div>
+                                </div>
+                                <div class="field">
+                                    <div class="field-label"><div class="field-title">Default Message Text</div></div>
+                                    <div class="field-control"><input type="text" x-model="customTheme.messageColors.default.text" placeholder="e.g., #E0E0E0"></div>
+                                </div>
+                                <!-- Agent Response -->
+                                <div class="field">
+                                    <div class="field-label"><div class="field-title">Agent Response Background</div></div>
+                                    <div class="field-control"><input type="text" x-model="customTheme.messageColors.agentResponse.background" placeholder="e.g., #1F3C1E"></div>
+                                </div>
+                                <div class="field">
+                                    <div class="field-label"><div class="field-title">Agent Response Text</div></div>
+                                    <div class="field-control"><input type="text" x-model="customTheme.messageColors.agentResponse.text" placeholder="e.g., #E0E0E0"></div>
+                                </div>
+                                 <!-- Agent Delegation -->
+                                <div class="field">
+                                    <div class="field-label"><div class="field-title">Agent Delegation Background</div></div>
+                                    <div class="field-control"><input type="text" x-model="customTheme.messageColors.agentDelegation.background" placeholder="e.g., #12685E"></div>
+                                </div>
+                                <div class="field">
+                                    <div class="field-label"><div class="field-title">Agent Delegation Text</div></div>
+                                    <div class="field-control"><input type="text" x-model="customTheme.messageColors.agentDelegation.text" placeholder="e.g., #E0E0E0"></div>
+                                </div>
+                                <!-- Tool -->
+                                <div class="field">
+                                    <div class="field-label"><div class="field-title">Tool Message Background</div></div>
+                                    <div class="field-control"><input type="text" x-model="customTheme.messageColors.tool.background" placeholder="e.g., #2A4170"></div>
+                                </div>
+                                <div class="field">
+                                    <div class="field-label"><div class="field-title">Tool Message Text</div></div>
+                                    <div class="field-control"><input type="text" x-model="customTheme.messageColors.tool.text" placeholder="e.g., #E0E0E0"></div>
+                                </div>
+                                <!-- Code Execution -->
+                                <div class="field">
+                                    <div class="field-label"><div class="field-title">Code Execution Background</div></div>
+                                    <div class="field-control"><input type="text" x-model="customTheme.messageColors.codeExe.background" placeholder="e.g., #4B3A69"></div>
+                                </div>
+                                <div class="field">
+                                    <div class="field-label"><div class="field-title">Code Execution Text</div></div>
+                                    <div class="field-control"><input type="text" x-model="customTheme.messageColors.codeExe.text" placeholder="e.g., #E0E0E0"></div>
+                                </div>
+                                <!-- Browser -->
+                                <div class="field">
+                                    <div class="field-label"><div class="field-title">Browser Message Background</div></div>
+                                    <div class="field-control"><input type="text" x-model="customTheme.messageColors.browser.background" placeholder="e.g., #4B3A69"></div>
+                                </div>
+                                <div class="field">
+                                    <div class="field-label"><div class="field-title">Browser Message Text</div></div>
+                                    <div class="field-control"><input type="text" x-model="customTheme.messageColors.browser.text" placeholder="e.g., #E0E0E0"></div>
+                                </div>
+                                <!-- Info -->
+                                <div class="field">
+                                    <div class="field-label"><div class="field-title">Info Message Background</div></div>
+                                    <div class="field-control"><input type="text" x-model="customTheme.messageColors.info.background" placeholder="e.g., #171717"></div>
+                                </div>
+                                <div class="field">
+                                    <div class="field-label"><div class="field-title">Info Message Text</div></div>
+                                    <div class="field-control"><input type="text" x-model="customTheme.messageColors.info.text" placeholder="e.g., #E0E0E0"></div>
+                                </div>
+                                <!-- Util -->
+                                <div class="field">
+                                    <div class="field-label"><div class="field-title">Utility Message Background</div></div>
+                                    <div class="field-control"><input type="text" x-model="customTheme.messageColors.util.background" placeholder="e.g., #23211A"></div>
+                                </div>
+                                <div class="field">
+                                    <div class="field-label"><div class="field-title">Utility Message Text</div></div>
+                                    <div class="field-control"><input type="text" x-model="customTheme.messageColors.util.text" placeholder="e.g., #E0E0E0"></div>
+                                </div>
+                                <!-- Warning -->
+                                <div class="field">
+                                    <div class="field-label"><div class="field-title">Warning Message Background</div></div>
+                                    <div class="field-control"><input type="text" x-model="customTheme.messageColors.warning.background" placeholder="e.g., #BC8036"></div>
+                                </div>
+                                <div class="field">
+                                    <div class="field-label"><div class="field-title">Warning Message Text</div></div>
+                                    <div class="field-control"><input type="text" x-model="customTheme.messageColors.warning.text" placeholder="e.g., #E0E0E0"></div>
+                                </div>
+                                <!-- Error -->
+                                <div class="field">
+                                    <div class="field-label"><div class="field-title">Error Message Background</div></div>
+                                    <div class="field-control"><input type="text" x-model="customTheme.messageColors.error.background" placeholder="e.g., #AF2222"></div>
+                                </div>
+                                <div class="field">
+                                    <div class="field-label"><div class="field-title">Error Message Text</div></div>
+                                    <div class="field-control"><input type="text" x-model="customTheme.messageColors.error.text" placeholder="e.g., #E0E0E0"></div>
+                                </div>
                             </div>
 
                             <div id="section-theme-bubbles" class="section">
                                 <div class="section-title">Message Bubble Appearance</div>
                                 <div class="section-description">Customize the shape of message bubbles.</div>
                                 <div class="field">
-                                    <div class="field-label">
-                                        <div class="field-title">Bubble Shape</div>
-                                    </div>
+                                    <div class="field-label"><div class="field-title">Bubble Shape</div></div>
                                     <div class="field-control">
                                         <select x-model="customTheme.bubbleShape">
                                             <option value="default">Default</option>

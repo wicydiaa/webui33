@@ -46,10 +46,10 @@ input[type="number"],
 textarea,
 select {
   width: 100%;
-  padding: 0.6rem 0.8rem; /* Adjusted padding */
-  border: 1px solid var(--color-border); /* Use theme border color */
-  border-radius: var(--border-radius); /* Use theme border-radius */
-  background-color: var(--color-input); /* Use theme input background */
+  padding: 0.5rem;
+  border: 1px solid var(--color-secondary);
+  border-radius: 0.25rem;
+  background-color: var(--color-background);
   color: var(--color-text);
   font-family: "Rubik", Arial, Helvetica, sans-serif;
   outline: none;
@@ -57,13 +57,8 @@ select {
 }
 
 input[type="text"]:focus,
-input[type="password"]:focus,
-input[type="number"]:focus,
-textarea:focus,
-select:focus {
-  border-color: var(--color-primary); /* Highlight with primary color on focus */
-  background-color: var(--color-input-focus); /* Use theme focus background */
-  /* opacity: 1; */ /* Not strictly needed if background/border change provides enough feedback */
+input[type="password"]:focus {
+  opacity: 1;
 }
 
 textarea {
@@ -71,17 +66,17 @@ textarea {
   font-family: 'Roboto Mono', monospace;
   scroll-behavior: smooth;
   resize: none;
-  /* background-clip: border-box; */ /* Handled by general input style if it uses border-box */
-  /* border: 6px solid transparent; */ /* Handled by general input style */
+  background-clip: border-box;
+  border: 6px solid transparent;
 }
 
-/* textarea:focus { // Handled by general input:focus style
-  background-color: var(--color-input-focus);
-} */
+textarea:focus {
+  background-color: #151515;
+}
 
 /* Button Disabled State */
 .btn-disabled,
-.btn-ok.btn-disabled { /* Ensure .btn-ok is styled by general button rules first */
+.btn-ok.btn-disabled {
   opacity: 0.5;
   cursor: not-allowed;
   pointer-events: none;
@@ -960,30 +955,43 @@ nav ul li a img {
     margin-bottom: 1.5rem; /* Standard section spacing */
 }
 
-#theme-tab-content .section-title {
-    margin-bottom: 1rem; /* Space below title */
+#theme-tab-content .section-title { /* Already have .section-title, this is for specificity if needed */
+    margin-bottom: 1rem;
 }
 
-#theme-tab-content .section-description {
-    margin-bottom: 1rem; /* Space below description */
+.section-subtitle { /* For "Per-Message Type Colors" heading */
+    font-size: 1.1rem;
+    font-weight: 500; /* Match section-title a bit */
+    color: var(--color-primary);
+    margin-top: 1.5rem; /* Space above this subtitle */
+    margin-bottom: 0.75rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--color-border);
 }
 
-/* Styling for color input fields */
-#section-theme-colors .field-control input[type="text"] {
-    min-width: 150px;
-    max-width: 200px; /* Prevent it from becoming too wide */
-    font-family: 'Roboto Mono', monospace; /* Monospaced font for hex codes */
-    padding: 0.5rem 0.75rem; /* Consistent padding */
+#theme-tab-content .section-description { /* Already have .section-description */
+    margin-bottom: 1rem;
+}
+
+/* Styling for color input fields in theme settings */
+#section-theme-colors .field-control input[type="text"],
+#section-site-customization .field-control input[type="text"],
+#section-message-type-colors .field-control input[type="text"] { /* Apply to all text inputs in these theme sections */
+    min-width: 180px; /* Adjusted width */
+    max-width: 250px;
+    font-family: 'Roboto Mono', monospace;
+    padding: 0.5rem 0.75rem;
+    margin-bottom: 5px; /* Add some spacing between stacked inputs */
 }
 
 /* Styling for bubble shape select element */
 #section-theme-bubbles .field-control select {
     padding: 0.5rem;
-    border-radius: var(--border-radius); /* Use theme variable */
+    border-radius: var(--border-radius);
     border: 1px solid var(--color-border);
     background-color: var(--color-input);
     color: var(--color-text);
-    min-width: 200px; /* Ensure decent width */
+    min-width: 200px;
 }
 
 /* Styling for the action buttons container in the theme tab */
@@ -992,6 +1000,6 @@ nav ul li a img {
     padding-top: 1rem;
     border-top: 1px solid var(--color-border);
     display: flex;
-    justify-content: flex-end; /* Align buttons to the right */
-    gap: 0.75rem; /* Space between buttons */
+    justify-content: flex-end;
+    gap: 0.75rem;
 }

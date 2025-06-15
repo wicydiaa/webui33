@@ -88,6 +88,17 @@ export function _drawMessage(
   const messageDiv = document.createElement("div");
   messageDiv.classList.add("message", ...messageClasses);
 
+  // Attempt to get a specific type from the classes for the data attribute
+  let specificType = 'default'; // Default type
+  if (messageClasses && messageClasses.length > 0) {
+      // Common pattern is 'message-ai', 'message-type' or just 'message-type'
+      const typeClass = messageClasses.find(cls => cls !== 'message-ai' && cls !== 'message' && !cls.startsWith('message-followup')); // ensure not to pick 'message-followup'
+      if (typeClass) {
+          specificType = typeClass.startsWith('message-') ? typeClass.substring(8) : typeClass;
+      }
+  }
+  messageDiv.dataset.messageType = specificType;
+
   if (heading) {
     const headingElement = document.createElement("h4");
     headingElement.textContent = heading;
@@ -103,7 +114,11 @@ export function _drawMessage(
     preElement.style.wordBreak = "break-word";
 
     const spanElement = document.createElement("span");
-    spanElement.innerHTML = convertHTML(content);
+    if (window.markdownEnabled && typeof marked !== 'undefined') {
+        spanElement.innerHTML = marked.parse(content); // Ensure marked.parse() is safe (e.g. use DOMPurify if input is untrusted, though for now assume marked's default is okay)
+    } else {
+        spanElement.innerHTML = convertHTML(content);
+    }
 
     // Add click handler for small screens
     spanElement.addEventListener("click", () => {
@@ -238,6 +253,7 @@ export function drawMessageUser(
 ) {
   const messageDiv = document.createElement("div");
   messageDiv.classList.add("message", "message-user");
+  messageDiv.dataset.messageType = 'user';
 
   const headingElement = document.createElement("h4");
   headingElement.textContent = "User message";
@@ -249,7 +265,11 @@ export function drawMessageUser(
 
     // Create a span for the content
     const spanElement = document.createElement("span");
-    spanElement.innerHTML = convertHTML(content);
+    if (window.markdownEnabled && typeof marked !== 'undefined') {
+        spanElement.innerHTML = marked.parse(content);
+    } else {
+        spanElement.innerHTML = convertHTML(content);
+    }
     textDiv.appendChild(spanElement);
 
     // Add click handler

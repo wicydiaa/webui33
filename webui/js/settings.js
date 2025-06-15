@@ -4,34 +4,23 @@ const settingsModalProxy = {
     settings: {},
     resolvePromise: null,
     activeTab: 'agent', // Default tab
+    darkMode: localStorage.getItem('darkMode') !== 'false',
 
-    customTheme: {
+    defaultTheme: {
+        siteTitle: 'Agent Zero',
+        logoUrl: 'public/splash.jpg',
+        logoLinkUrl: 'https://github.com/frdel/agent-zero',
+        markdownEnabled: false,
         colors: {
-            backgroundDark: '#121212',
-            textDark: '#E0E0E0',
-            primaryDark: '#BB86FC',
-            secondaryDark: '#373737',
-            accentDark: '#03DAC6',
-            messageBgDark: '#1E1E1E',
-            panelDark: '#1A1A1A',
-            borderDark: '#2C2C2C',
-            inputDark: '#232323',
-            inputFocusDark: '#2A2A2A',
-            // Light theme colors
-            backgroundLight: '#FFFFFF',
-            textLight: '#212121',
-            primaryLight: '#6200EE',
-            secondaryLight: '#F5F5F5',
-            accentLight: '#03DAC6',
-            messageBgLight: '#F0F0F0',
-            panelLight: '#FFFFFF',
-            borderLight: '#E0E0E0',
-            inputLight: '#F5F5F5',
-            inputFocusLight: '#EEEEEE',
+            backgroundDark: '#121212', textDark: '#E0E0E0', primaryDark: '#BB86FC', secondaryDark: '#373737', accentDark: '#03DAC6', messageBgDark: '#1E1E1E', panelDark: '#1A1A1A', borderDark: '#2C2C2C', inputDark: '#232323', inputFocusDark: '#2A2A2A',
+            backgroundLight: '#FFFFFF', textLight: '#212121', primaryLight: '#6200EE', secondaryLight: '#F5F5F5', accentLight: '#03DAC6', messageBgLight: '#F0F0F0', panelLight: '#FFFFFF', borderLight: '#E0E0E0', inputLight: '#F5F5F5', inputFocusLight: '#EEEEEE',
+        },
+        messageColors: { // Default message colors (can be empty if relying on CSS fallbacks or global messageBg)
+            user: { background: '', text: '' }, ai: { background: '', text: '' }, agent: { background: '', text: '' }, agentResponse: { background: '', text: '' }, agentDelegation: { background: '', text: '' }, tool: { background: '', text: '' }, codeExe: { background: '', text: '' }, browser: { background: '', text: '' }, info: { background: '', text: '' }, util: { background: '', text: '' }, warning: { background: '', text: '' }, error: { background: '', text: '' }, default: { background: '', text: '' }
         },
         bubbleShape: 'default'
     },
-    defaultTheme: {}, // Will be populated in init
+    customTheme: {}, // Will be initialized from defaultTheme and localStorage
 
     // Computed property for filtered sections
     get filteredSections() {
@@ -168,8 +157,9 @@ const settingsModalProxy = {
                 localStorage.setItem('settingsActiveTab', savedTab);
 
                 // Initialize and load custom theme settings
-                if (typeof this.initCustomTheme === 'function') {
-                    this.initCustomTheme();
+                // This ensures customTheme is populated before watchers are set up in Alpine.data
+                if (modalAD.initCustomTheme && typeof modalAD.initCustomTheme === 'function') {
+                    modalAD.initCustomTheme();
                 }
 
 
@@ -324,63 +314,125 @@ const settingsModalProxy = {
         }
     },
 
+    toggleDarkMode(val) {
+        this.darkMode = val; // Update the reactive property
+        localStorage.setItem('darkMode', val);
+        document.body.classList.toggle('dark-mode', val);
+        document.body.classList.toggle('light-mode', !val);
+        // Potentially re-apply theme if colors depend on dark/light mode distinction not handled by pure CSS vars
+        this.applyCustomTheme();
+    },
+
     // Theme Customization Methods
     initCustomTheme() {
-        // Deep copy default theme to avoid modifying it when customTheme changes
-        this.defaultTheme = JSON.parse(JSON.stringify(this.customTheme));
+        this.customTheme = JSON.parse(JSON.stringify(this.defaultTheme)); // Initialize with defaults
         this.loadCustomThemeFromLocalStorage();
-
-        // Watch for changes in customTheme to apply them live
-        // Note: This $watch is conceptual for settingsModalProxy.
-        // In Alpine, $watch is typically used within an Alpine.data component context.
-        // If settingsModalProxy is a global object used by an Alpine component,
-        // the $watch should be set up in that component's init referring to this proxy.
-        // For now, we'll assume direct application on save/load/reset.
     },
 
     applyCustomTheme() {
+        // Site Title
+        document.title = this.customTheme.siteTitle || this.defaultTheme.siteTitle;
+
+        // Logo
+        const logoImg = document.querySelector('#logo-container img');
+        const logoLink = document.querySelector('#logo-container a');
+        if (logoImg) logoImg.src = this.customTheme.logoUrl || this.defaultTheme.logoUrl;
+        if (logoLink) logoLink.href = this.customTheme.logoLinkUrl || this.defaultTheme.logoLinkUrl;
+
+        // Global Colors
         for (const key in this.customTheme.colors) {
-            let cssVarName = '--color-' + key.replace(/([A-Z])/g, '-$1').toLowerCase();
-            document.documentElement.style.setProperty(cssVarName, this.customTheme.colors[key]);
+            if (Object.prototype.hasOwnProperty.call(this.customTheme.colors, key)) {
+                let cssVarName = '--color-' + key.replace(/([A-Z])/g, '-$1').toLowerCase();
+                document.documentElement.style.setProperty(cssVarName, this.customTheme.colors[key]);
+            }
         }
+
+        // Per-Message Type Colors
+        for (const type in this.customTheme.messageColors) {
+            if (Object.prototype.hasOwnProperty.call(this.customTheme.messageColors, type)) {
+                const bgColor = this.customTheme.messageColors[type].background;
+                const textColor = this.customTheme.messageColors[type].text;
+                // Fallback to default theme's specific message color or ultimately to nothing (CSS will handle it)
+                const defaultBg = this.defaultTheme.messageColors[type] ? this.defaultTheme.messageColors[type].background : '';
+                const defaultText = this.defaultTheme.messageColors[type] ? this.defaultTheme.messageColors[type].text : '';
+
+                if (bgColor) {
+                    document.documentElement.style.setProperty(`--message-${type}-bg`, bgColor);
+                } else {
+                     document.documentElement.style.removeProperty(`--message-${type}-bg`);
+                }
+                if (textColor) {
+                    document.documentElement.style.setProperty(`--message-${type}-text`, textColor);
+                } else {
+                    document.documentElement.style.removeProperty(`--message-${type}-text`);
+                }
+            }
+        }
+
         this.applyBubbleShape(this.customTheme.bubbleShape);
+        window.markdownEnabled = this.customTheme.markdownEnabled;
     },
 
     applyBubbleShape(shapeValue) {
         const bodyClasses = document.body.classList;
-        ['message-bubble-rounded', 'message-bubble-slightly-rounded', 'message-bubble-square'].forEach(cls => bodyClasses.remove(cls));
+        const prefix = 'message-bubble-';
+        bodyClasses.forEach(className => {
+            if (className.startsWith(prefix)) {
+                bodyClasses.remove(className);
+            }
+        });
         if (shapeValue && shapeValue !== 'default') {
-            bodyClasses.add('message-bubble-' + shapeValue);
+            bodyClasses.add(prefix + shapeValue);
+        } else {
+            bodyClasses.add(prefix + 'default'); // Ensure default is applied if shapeValue is 'default'
         }
     },
 
     saveCustomTheme() {
         localStorage.setItem('userCustomTheme', JSON.stringify(this.customTheme));
-        this.applyCustomTheme(); // Apply immediately
-        // Consider adding a toast message here: showToast('Theme saved!', 'success');
+        this.applyCustomTheme();
+        showToast('Theme saved!', 'success');
     },
 
     loadCustomThemeFromLocalStorage() {
-        const savedTheme = localStorage.getItem('userCustomTheme');
-        if (savedTheme) {
+        const savedThemeJSON = localStorage.getItem('userCustomTheme');
+        let themeToApply = JSON.parse(JSON.stringify(this.defaultTheme)); // Start with a deep copy of defaults
+
+        if (savedThemeJSON) {
             try {
-                const parsedTheme = JSON.parse(savedTheme);
-                // Merge saved theme with defaults to ensure all properties are present
-                this.customTheme = {
-                    ...JSON.parse(JSON.stringify(this.defaultTheme)), // Start with a copy of defaults
-                    ...parsedTheme, // Override with saved values
-                    colors: { // Ensure colors object is also merged deeply
-                        ...JSON.parse(JSON.stringify(this.defaultTheme.colors)),
-                        ...(parsedTheme.colors || {})
+                const parsedTheme = JSON.parse(savedThemeJSON);
+                // Deep merge saved theme into defaults
+                themeToApply.siteTitle = parsedTheme.siteTitle !== undefined ? parsedTheme.siteTitle : themeToApply.siteTitle;
+                themeToApply.logoUrl = parsedTheme.logoUrl !== undefined ? parsedTheme.logoUrl : themeToApply.logoUrl;
+                themeToApply.logoLinkUrl = parsedTheme.logoLinkUrl !== undefined ? parsedTheme.logoLinkUrl : themeToApply.logoLinkUrl;
+                themeToApply.markdownEnabled = parsedTheme.markdownEnabled !== undefined ? parsedTheme.markdownEnabled : themeToApply.markdownEnabled;
+                themeToApply.bubbleShape = parsedTheme.bubbleShape || themeToApply.bubbleShape;
+
+                if (parsedTheme.colors) {
+                    for (const key in themeToApply.colors) {
+                        if (parsedTheme.colors[key] !== undefined) {
+                            themeToApply.colors[key] = parsedTheme.colors[key];
+                        }
                     }
-                };
+                }
+                if (parsedTheme.messageColors) {
+                    for (const type in themeToApply.messageColors) {
+                        if (parsedTheme.messageColors[type]) {
+                            if (parsedTheme.messageColors[type].background !== undefined) {
+                                themeToApply.messageColors[type].background = parsedTheme.messageColors[type].background;
+                            }
+                            if (parsedTheme.messageColors[type].text !== undefined) {
+                                themeToApply.messageColors[type].text = parsedTheme.messageColors[type].text;
+                            }
+                        }
+                    }
+                }
             } catch (e) {
                 console.error("Error parsing saved theme, reverting to default:", e);
-                this.customTheme = JSON.parse(JSON.stringify(this.defaultTheme));
+                // themeToApply is already defaultTheme if parsing fails
             }
-        } else {
-            this.customTheme = JSON.parse(JSON.stringify(this.defaultTheme));
         }
+        this.customTheme = themeToApply;
         this.applyCustomTheme();
     },
 
@@ -388,15 +440,20 @@ const settingsModalProxy = {
         localStorage.removeItem('userCustomTheme');
         this.customTheme = JSON.parse(JSON.stringify(this.defaultTheme)); // Deep copy
 
-        // Remove inline styles for all theme color variables
-        const themeColorKeys = Object.keys(this.defaultTheme.colors);
-        themeColorKeys.forEach(key => {
+        // Remove all potentially set inline styles
+        const colorKeys = Object.keys(this.defaultTheme.colors);
+        colorKeys.forEach(key => {
             let cssVarName = '--color-' + key.replace(/([A-Z])/g, '-$1').toLowerCase();
             document.documentElement.style.removeProperty(cssVarName);
         });
+        const messageColorKeys = Object.keys(this.defaultTheme.messageColors);
+        messageColorKeys.forEach(type => {
+            document.documentElement.style.removeProperty(`--message-${type}-bg`);
+            document.documentElement.style.removeProperty(`--message-${type}-text`);
+        });
 
         this.applyCustomTheme(); // This will re-apply defaults (from CSS or new defaults) and default bubble shape
-         // Consider adding a toast message here: showToast('Theme reset to default!', 'info');
+        showToast('Theme reset to default!', 'info');
     }
 };
 
@@ -422,6 +479,7 @@ document.addEventListener('alpine:init', function () {
     Alpine.store('root', {
         activeTab: localStorage.getItem('settingsActiveTab') || 'agent',
         isOpen: false,
+        // darkMode: localStorage.getItem('darkMode') !== 'false', // Moved to settingsModalProxy
 
         toggleSettings() {
             this.isOpen = !this.isOpen;
@@ -430,51 +488,69 @@ document.addEventListener('alpine:init', function () {
 
     // Then initialize other Alpine components
     Alpine.data('settingsModal', function () {
-        // Give settingsModalProxy access to Alpine's reactivity if needed, e.g. for $watch.
-        // However, the core logic is on settingsModalProxy.
-        // We might need to ensure 'this' context is correct if methods are called from HTML.
-        // A simple way is to spread the proxy, or explicitly delegate.
-
-        // Make a shallow copy of settingsModalProxy and add Alpine specific init
         const componentData = { ...settingsModalProxy };
 
         componentData.initAlpineWatchers = function() {
-            // Setup watchers for live theme updates
-            // Ensure 'this' refers to the Alpine component instance,
-            // which has customTheme from the spread.
             this.$watch('customTheme.colors', (newColors) => {
                 for (const key in newColors) {
-                    let cssVarName = '--color-' + key.replace(/([A-Z])/g, '-$1').toLowerCase();
-                    document.documentElement.style.setProperty(cssVarName, newColors[key]);
+                     if (Object.prototype.hasOwnProperty.call(newColors, key)) {
+                        let cssVarName = '--color-' + key.replace(/([A-Z])/g, '-$1').toLowerCase();
+                        document.documentElement.style.setProperty(cssVarName, newColors[key]);
+                    }
                 }
             }, { deep: true });
 
-            this.$watch('customTheme.bubbleShape', (newShape) => {
-                this.applyBubbleShape(newShape); // Assumes applyBubbleShape is on componentData
+            this.$watch('customTheme.messageColors', (newMessageColors) => {
+                for (const type in newMessageColors) {
+                    if (Object.prototype.hasOwnProperty.call(newMessageColors, type)) {
+                        const bgColor = newMessageColors[type].background;
+                        const textColor = newMessageColors[type].text;
+                        if (bgColor) {
+                            document.documentElement.style.setProperty(`--message-${type}-bg`, bgColor);
+                        } else {
+                            document.documentElement.style.removeProperty(`--message-${type}-bg`);
+                        }
+                        if (textColor) {
+                            document.documentElement.style.setProperty(`--message-${type}-text`, textColor);
+                        } else {
+                            document.documentElement.style.removeProperty(`--message-${type}-text`);
+                        }
+                    }
+                }
+            }, { deep: true });
+
+            this.$watch('customTheme.bubbleShape', (newShape) => { this.applyBubbleShape(newShape); });
+            this.$watch('customTheme.siteTitle', (newTitle) => { document.title = newTitle || this.defaultTheme.siteTitle; });
+            this.$watch('customTheme.logoUrl', (newUrl) => {
+                const logoImg = document.querySelector('#logo-container img');
+                if (logoImg) logoImg.src = newUrl || this.defaultTheme.logoUrl;
             });
+            this.$watch('customTheme.logoLinkUrl', (newUrl) => {
+                const logoLink = document.querySelector('#logo-container a');
+                if (logoLink) logoLink.href = newUrl || this.defaultTheme.logoLinkUrl;
+            });
+            this.$watch('customTheme.markdownEnabled', (val) => { window.markdownEnabled = val; });
+            this.$watch('darkMode', (val) => { this.toggleDarkMode(val); });
+
+
         };
 
         return {
-            ...componentData, // Spread the methods and properties from settingsModalProxy
-            settingsData: {}, // Local to this Alpine component instance
-            filteredSections: [], // Local
-            // activeTab: 'agent', // This will be managed by settingsModalProxy through store
-            isLoading: true, // Local
+            ...componentData,
+            settingsData: {},
+            filteredSections: [],
+            isLoading: true,
 
             async init() {
-                // Initialize with the store value
                 this.activeTab = Alpine.store('root').activeTab || 'agent';
 
                 // Initialize theme settings (loads from localStorage and applies)
                 if (typeof this.initCustomTheme === 'function') {
-                    this.initCustomTheme(); // This will set this.customTheme and this.defaultTheme
+                    this.initCustomTheme();
                 }
 
-                // Setup watchers for live theme updates
                 this.initAlpineWatchers();
 
-
-                // Watch store tab changes
                 this.$watch('$store.root.activeTab', (newTab) => {
                     if (typeof newTab !== 'undefined') {
                         this.activeTab = newTab;
@@ -483,14 +559,11 @@ document.addEventListener('alpine:init', function () {
                     }
                 });
 
-                // Load settings
-                await this.fetchSettings(); // This populates this.settingsData
-                this.updateFilteredSections(); // This uses this.activeTab and this.settingsData
+                await this.fetchSettings();
+                this.updateFilteredSections();
             },
 
-            // switchTab is already on settingsModalProxy, which is spread here.
-            // Ensure 'this' context is correctly handled if it relies on Alpine instance properties
-            // not on the original proxy. For this structure, it should be fine.
+            // switchTab is on componentData (from settingsModalProxy)
 
             async fetchSettings() {
                 try {
